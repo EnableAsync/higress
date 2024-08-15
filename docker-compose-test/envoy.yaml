@@ -27,19 +27,15 @@ static_resources:
             - name: local_service
               domains: ["*"]
               routes:
+              # - match:
+              #     prefix: "/"
+              #   route:
+              #     cluster: httpbin
               - match:
                   prefix: "/"
                 route:
-                  cluster: httpbin
-
-            - name: llm
-              domains: [ "*" ]
-              routes:
-                - match:
-                    prefix: "/llm"
-                  route:
-                    cluster: llm
-                    timeout: 300s
+                  cluster: llm
+                  timeout: 300s
 
           http_filters:
           - name: req-block
@@ -86,7 +82,8 @@ static_resources:
                           "type": "openai",                                
                           "apiTokens": [
                             "YOUR_API_TOKEN"
-                          ]                  
+                          ],
+                          "openaiCustomUrl": "172.17.0.1:8000/v1"
                         }
                       }
 

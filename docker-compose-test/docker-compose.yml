@@ -13,6 +13,7 @@ services:
     - "10000:10000"
     volumes:
     - ./envoy.yaml:/etc/envoy/envoy.yaml
+    # 注意默认没有这两个 wasm 的时候，docker 会创建文件夹，这样会出错，需要有 wasm 文件之后 down 然后重新 up
     - ./main.wasm:/etc/envoy/main.wasm
     - ./ai-proxy.wasm:/etc/envoy/ai-proxy.wasm
 
