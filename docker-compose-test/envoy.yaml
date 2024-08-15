@@ -83,7 +83,7 @@ static_resources:
                           "apiTokens": [
                             "YOUR_API_TOKEN"
                           ],
-                          "openaiCustomUrl": "172.17.0.1:8000/v1"
+                          "openaiCustomUrl": "172.17.0.1:8000/v1/chat/completions"
                         }
                       }
 
@@ -121,8 +121,3 @@ static_resources:
                   socket_address:
                     address: 172.17.0.1 # 本地 API 服务地址，这里是 docker
                     port_value: 8000
-    transport_socket:
-      name: envoy.transport_sockets.tls
-      typed_config:
-        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
-        "sni": "localhost"
