@@ -38,29 +38,6 @@ static_resources:
                   timeout: 300s
 
           http_filters:
-          - name: req-block
-            typed_config:
-              "@type": type.googleapis.com/udpa.type.v1.TypedStruct
-              type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-              value:
-                config:
-                  name: req-block
-                  vm_config:
-                    runtime: envoy.wasm.runtime.v8
-                    code:
-                      local:
-                        filename: /etc/envoy/main.wasm
-                  configuration:
-                    "@type": "type.googleapis.com/google.protobuf.StringValue"
-                    value: |
-                      {
-                        "case_sensitive": false,
-                        "block_bodies": ["nginx"],
-                        "block_headers": ["example-key", "example-value"],
-                        "block_urls": ["swagger.html"],
-                        "blocked_code": 404
-                      }
-
           # llm
           - name: llm
             typed_config:
@@ -83,7 +60,10 @@ static_resources:
                           "apiTokens": [
                             "YOUR_API_TOKEN"
                           ],
-                          "openaiCustomUrl": "172.17.0.1:8000/v1/chat/completions"
+                          "openaiCustomUrl": "172.17.0.1:8000/v1/chat/completions",
+                          "modelMapping": {
+                            "gpt-4o-mini": "qwen"
+                          }
                         }
                       }
 

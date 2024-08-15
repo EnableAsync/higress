@@ -14,7 +14,7 @@ services:
     volumes:
     - ./envoy.yaml:/etc/envoy/envoy.yaml
     # 注意默认没有这两个 wasm 的时候，docker 会创建文件夹，这样会出错，需要有 wasm 文件之后 down 然后重新 up
-    - ./main.wasm:/etc/envoy/main.wasm
+    # - ./main.wasm:/etc/envoy/main.wasm
     - ./ai-proxy.wasm:/etc/envoy/ai-proxy.wasm
 
   httpbin:
@@ -23,6 +23,18 @@ services:
     - wasmtest
     ports:
     - "12345:80"
+
+  lobechat:
+    # docker hub 如果访问不了，可以改用这个地址：registry.cn-hangzhou.aliyuncs.com/2456868764/lobe-chat:v1.1.3
+    image: lobehub/lobe-chat
+    environment:
+      - CODE=admin
+      - OPENAI_API_KEY=unused
+      - OPENAI_PROXY_URL=http://envoy:10000/v1
+    networks:
+      - wasmtest
+    ports:
+      - "3210:3210/tcp"
 
 networks:
   wasmtest: {}
