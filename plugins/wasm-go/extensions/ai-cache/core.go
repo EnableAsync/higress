@@ -250,3 +250,22 @@ func uploadEmbeddingAndAnswer(ctx wrapper.HttpContext, config config.PluginConfi
 		}
 	}
 }
+
+// 主要用于相似度/距离/点积判断
+// 相似度度量的是两个向量在方向上的相似程度。相似度越高，两个向量越接近。
+// 距离度量的是两个向量在空间上的远近程度。距离越小，两个向量越接近。
+// compare 函数根据操作符进行判断并返回结果
+func compare(operator string, value1 float64, value2 float64) (bool, error) {
+	switch operator {
+	case "gt":
+		return value1 > value2, nil
+	case "gte":
+		return value1 >= value2, nil
+	case "lt":
+		return value1 < value2, nil
+	case "lte":
+		return value1 <= value2, nil
+	default:
+		return false, errors.New("unsupported operator: " + operator)
+	}
+}
