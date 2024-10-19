@@ -78,6 +78,7 @@ es-bash:
 
 es-post-index:
 	curl -u elastic:123456 -X PUT "localhost:9200/higress?pretty"
+	
 
 # redis client
 redis-cli:

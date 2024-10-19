@@ -58,20 +58,27 @@ static_resources:
                         "embedding": {
                           "type": "dashscope",
                           "serviceName": "dashscope",
-                          "apiKey": "sk-346fadc4ed8448e487ea84b57788d816"
+                          "apiKey": "sk-81bb03f432c6412797bf068fb3288b4a"
                         },
                         "vector": {
-                          "type": "pinecone",
-                          "serviceName": "pinecone",
+                          "type": "qdrant",
+                          "serviceName": "qdrant",
                           "collectionID": "higress",
-                          "serviceDomain": "higress-2bdfipe.svc.aped-4627-b74a.pinecone.io",
-                          "apiKey": "d53fb03e-16a9-4390-89be-dd17869705da"
+                          "servicePort": 6333
                         }
                       }
 
                       
 
           # 上面的配置中 redis 的配置名字是 redis，而不是 golang tag 中的 redisConfig
+                        # "vector": {
+                        #   "type": "pinecone",
+                        #   "serviceName": "pinecone",
+                        #   "collectionID": "higress",
+                        #   "serviceDomain": "higress-2bdfipe.svc.aped-4627-b74a.pinecone.io",
+                        #   "apiKey": "d53fb03e-16a9-4390-89be-dd17869705da"
+                        # }
+
                         # "vector": {
                         #   "type": "elasticsearch",
                         #   "serviceName": "es",
@@ -160,7 +167,7 @@ static_resources:
                         "provider": {
                           "type": "zhipuai",                                
                           "apiTokens": [
-                            "67e93d524df46fca3640df67a7461c04.qOksqKAoWHcv03aV"
+                            "58d6dc4b77408a5f0a9ee1ac25a31ca8.I0u239eK1QkzhC5X"
                           ]
                         }
                       }
@@ -259,7 +266,21 @@ static_resources:
                   socket_address:
                     address: 172.17.0.1 # 本地 API 服务地址，这里是 docker0
                     port_value: 8081
-
+  # qdrant
+  - name: outbound|6333||qdrant.dns
+    connect_timeout: 30s
+    type: LOGICAL_DNS
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: outbound|6333||qdrant.dns
+      endpoints:
+        - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: 172.17.0.1 # 本地 API 服务地址，这里是 docker0
+                    port_value: 6333
   # llm
   - name: llm
     connect_timeout: 30s
