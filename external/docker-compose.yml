@@ -37,6 +37,15 @@ services:
     ports:
     - "6379:6379"
 
+  qdrant:
+    image: qdrant/qdrant
+    networks:
+      - wasmtest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
   # httpbin:
   #   image: kennethreitz/httpbin:latest
   #   networks:
