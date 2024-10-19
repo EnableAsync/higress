@@ -1,5 +1,7 @@
 HEADER := Content-Type: application/json
 WEAVIATE_PORT = 8081
+CLUSTER_ENDPOINT="http://localhost:19530"
+# TOKEN="root:Milvus"
 
 
 .PHONY: proxy cache docker weaviate-post-collection weaviate-post-obj weaviate-get-obj
@@ -78,7 +80,24 @@ es-bash:
 
 es-post-index:
 	curl -u elastic:123456 -X PUT "localhost:9200/higress?pretty"
-	
+
+milvus-create-collection:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/collections/create" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress","dimension": 1536, "autoId": true}'
+
+milvus-get-vector:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/entities/get" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress","id": [0, 1, 2, 3, 4, 5], "outputFields": ["question"]}'
+
+milvus-get-stats:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/collections/get_stats" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress"}'
+
+milvus-get-describe:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/collections/describe" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress"}'
+
+milvus-get-list:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/entities/list" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress"}'
+
+milvus-delete-collection:
+	curl --request POST --url "${CLUSTER_ENDPOINT}/v2/vectordb/collections/drop" --header "Authorization: Bearer ${TOKEN}" --header "Content-Type: application/json" -d '{"collectionName": "higress"}'
 
 # redis client
 redis-cli:

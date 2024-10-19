@@ -58,13 +58,15 @@ static_resources:
                         "embedding": {
                           "type": "dashscope",
                           "serviceName": "dashscope",
-                          "apiKey": "sk-81bb03f432c6412797bf068fb3288b4a"
+                          "apiKey": "sk-"
                         },
                         "vector": {
-                          "type": "qdrant",
-                          "serviceName": "qdrant",
+                          "type": "milvus",
+                          "serviceName": "milvus",
                           "collectionID": "higress",
-                          "servicePort": 6333
+                          "servicePort": 19530,
+                          "threshold": 0.7,
+                          "thresholdRelation": "gte"
                         }
                       }
 
@@ -72,11 +74,18 @@ static_resources:
 
           # 上面的配置中 redis 的配置名字是 redis，而不是 golang tag 中的 redisConfig
                         # "vector": {
+                        #   "type": "qdrant",
+                        #   "serviceName": "qdrant",
+                        #   "collectionID": "higress",
+                        #   "servicePort": 6333
+                        # }
+
+                        # "vector": {
                         #   "type": "pinecone",
                         #   "serviceName": "pinecone",
                         #   "collectionID": "higress",
-                        #   "serviceDomain": "higress-2bdfipe.svc.aped-4627-b74a.pinecone.io",
-                        #   "apiKey": "d53fb03e-16a9-4390-89be-dd17869705da"
+                        #   "serviceDomain": "higress-.svc.aped--.pinecone.io",
+                        #   "apiKey": "----"
                         # }
 
                         # "vector": {
@@ -104,7 +113,7 @@ static_resources:
                         # "vector": {
                         #   "type": "chroma",
                         #   "serviceName": "chroma",
-                        #   "collectionID": "8f8accc8-b68c-4fb1-84af-0292f9236e8a",
+                        #   "collectionID": "----",
                         #   "servicePort": 8001
                         # },                        
                         
@@ -113,13 +122,13 @@ static_resources:
                         #   "serviceName": "dashvector",
                         #   "collectionID": "higress_euclidean",
                         #   "serviceDomain": "vrs-cn-g6z3yq2wy0001z.dashvector.cn-hangzhou.aliyuncs.com",
-                        #   "apiKey": "sk-nAn4GfZFrbLNhGffVIIq6tdgWNjV7D8A0F7CC5E1011EF9A1EB61E393DC850"
+                        #   "apiKey": "sk-"
                         # },
                         
                         # "vectorProvider": {
                         #   "VectorStoreProviderType": "chroma",
                         #   "ChromaServiceName": "chroma",
-                        #   "ChromaCollectionID": "0294deb1-8ef5-4582-b21c-75f23093db2c"
+                        #   "ChromaCollectionID": "----"
                         # },
 
                         # "vectorProvider": {
@@ -142,7 +151,7 @@ static_resources:
                         # "vector": {
                         #   "type": "pinecone",
                         #   "PineconeServiceName": "pinecone",
-                        #   "PineconeApiEndpoint": "higress-2bdfipe.svc.aped-4627-b74a.pinecone.io",
+                        #   "PineconeApiEndpoint": "higress-.svc.aped--.pinecone.io",
                         #   "PineconeThreshold": "0.7",
                         #   "ThresholdRelation": "gte",
                         #   "PineconeApiKey": "key"
@@ -167,7 +176,7 @@ static_resources:
                         "provider": {
                           "type": "zhipuai",                                
                           "apiTokens": [
-                            "58d6dc4b77408a5f0a9ee1ac25a31ca8.I0u239eK1QkzhC5X"
+                            "."
                           ]
                         }
                       }
@@ -281,6 +290,21 @@ static_resources:
                   socket_address:
                     address: 172.17.0.1 # 本地 API 服务地址，这里是 docker0
                     port_value: 6333
+  # milvus
+  - name: outbound|19530||milvus.dns
+    connect_timeout: 30s
+    type: LOGICAL_DNS
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: outbound|19530||milvus.dns
+      endpoints:
+        - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: 172.17.0.1 # 本地 API 服务地址，这里是 docker0
+                    port_value: 19530
   # llm
   - name: llm
     connect_timeout: 30s
